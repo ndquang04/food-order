@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema(
       default: '',
     },
     mobile: {
-      type: Number,
+      type: String,
       default: null,
     },
     refresh_token: {
@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema(
       default: '',
     },
     status: {
-      type: Date,
+      type: String,
       enum: ['Active', 'Inactive', 'Suspended'],
       default: 'Active',
     },
