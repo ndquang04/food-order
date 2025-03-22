@@ -48,7 +48,7 @@ export async function registerUserController(request, response) {
     const newUser = new UserModel(payload);
     const save = await newUser.save();
 
-    const verifyEmailUrl = `${process.env.PRONTEND_URL}/verify-email?code=${save?._id}`;
+    const verifyEmailUrl = `${process.env.FRONTEND_URL}/verify-email?code=${save?._id}`;
 
     const verifyEmail = await sendEmail({
       sendTo: email,
