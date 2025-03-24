@@ -13,7 +13,7 @@ const generatedAccessToken = async (userId) => {
   } catch (error) {}
 };
 
-const genetatedRefreshToken = async (userId) => {
+const generatedRefreshToken = async (userId) => {
   try {
     const refresh_token = jwt.sign(
       {id: userId},
@@ -34,8 +34,8 @@ const genetatedRefreshToken = async (userId) => {
   } catch (error) {}
 };
 
-const genetatedOtp = () => {
+const generatedOtp = () => {
   return Math.floor(Math.random() * 900000) + 100000;
 };
 
-export {generatedAccessToken, genetatedRefreshToken, genetatedOtp};
+export {generatedAccessToken, generatedRefreshToken, generatedOtp};

@@ -10,14 +10,14 @@ import {
 import {httpResponses} from '../utils/constant.js';
 import {
   generatedAccessToken,
-  genetatedOtp,
-  genetatedRefreshToken,
-} from '../utils/genetated.js';
+  generatedOtp,
+  generatedRefreshToken,
+} from '../utils/generated.js';
 import uploadImageCloudiary from '../utils/uploadImage.js';
 dotenv.config();
 
 const cookieOptions = {
-  httmlOnly: true,
+  htmlOnly: true,
   secure: true,
   sameSite: 'None',
 };
@@ -97,27 +97,53 @@ export async function loginController(request, response) {
 
     const user = await UserModel.findOne({email});
     if (!user) {
-      return httpResponses(400, response, 'User not register');
+      return httpResponses(
+        400,
+        response,
+        'Địa chỉ email không khớp, vui lòng kiểm tra lại'
+      );
     }
 
     if (user.status !== 'Active') {
-      return httpResponses(400, response, 'Contact to Admin');
+      return httpResponses(400, response, 'Vui lòng liên hệ với quản trị viên');
     }
 
     const checkPassword = await bcryptjs.compare(password, user.password);
     if (!checkPassword) {
-      return httpResponses(400, response, 'Check your password');
+      return httpResponses(
+        400,
+        response,
+        'Mật khẩu không khớp, vui lòng kiểm tra lại'
+      );
     }
     const accessToken = await generatedAccessToken(user._id);
-    const refreshToken = await genetatedRefreshToken(user._id);
+    const refreshToken = await generatedRefreshToken(user._id);
+
+    // update last login date
+    await UserModel.findByIdAndUpdate(user._id, {
+      last_login_date: new Date(),
+    });
 
     response.cookie('accessToken', accessToken, cookieOptions);
     response.cookie('refreshToken', refreshToken, cookieOptions);
 
-    return httpResponses(200, response, 'Login Successfully!', {
+    return httpResponses(200, response, 'Đăng nhập thành công !', {
       accessToken,
       refreshToken,
     });
+  } catch (error) {
+    return httpResponses(500, response, error.message || error);
+  }
+}
+
+// get login user details
+export async function userDetailsController(request, response) {
+  try {
+    const userId = request.userId;
+    const user = await UserModel.findById(userId).select(
+      '-password -refresh_token'
+    );
+    return httpResponses(200, response, 'user details', user);
   } catch (error) {
     return httpResponses(500, response, error.message || error);
   }
@@ -136,7 +162,7 @@ export async function logoutController(request, response) {
       refresh_token: '',
     });
 
-    return httpResponses(200, response, 'Logout Successfully!');
+    return httpResponses(200, response, 'Đăng xuất thành công !');
   } catch (error) {
     return httpResponses(500, response, error.message || error);
   }
@@ -153,7 +179,7 @@ export async function uploadAvatarController(request, response) {
       avatar: upload.url,
     });
 
-    return httpResponses(200, response, 'upload profile', {
+    return httpResponses(200, response, 'Tải ảnh lên thành công !', {
       _id: userId,
       avatar: upload.secure_url,
     });
@@ -188,7 +214,7 @@ export async function updateUserDetailsController(request, response) {
     return httpResponses(
       200,
       response,
-      'Update User Successfully!',
+      'Cập nhật hồ sơ thành công !',
       updateUser
     );
   } catch (error) {
@@ -203,10 +229,10 @@ export async function forgotPasswordController(request, response) {
 
     const user = await UserModel.findOne({email});
     if (!user) {
-      return httpResponses(400, response, 'Email is not available');
+      return httpResponses(400, response, 'Địa chỉ email chưa được đăng ký');
     }
 
-    const otp = genetatedOtp();
+    const otp = generatedOtp();
 
     // Add one hour to the current time
     const now = new Date();
@@ -223,7 +249,7 @@ export async function forgotPasswordController(request, response) {
       html: forgotPasswordTemplate(user.name, otp),
     });
 
-    return httpResponses(200, response, 'Check your email!');
+    return httpResponses(200, response, 'Vui lòng kiểm tra email của bạn !');
   } catch (error) {
     return httpResponses(500, response, error.message || error);
   }
@@ -244,11 +270,19 @@ export async function verifyForgotPasswordOTP(request, response) {
     }
 
     if (user.forgot_password_expiry < new Date()) {
-      return httpResponses(400, response, 'Otp is expired');
+      return httpResponses(
+        400,
+        response,
+        'Mã OTP hết hạn, vui lòng kiểm tra lại'
+      );
     }
 
     if (otp !== user.forgot_password_otp) {
-      return httpResponses(400, response, 'Invalid otp');
+      return httpResponses(
+        400,
+        response,
+        'Mã OTP không đúng, vui lòng thử lại'
+      );
     }
 
     // await sendEmail({
@@ -258,7 +292,13 @@ export async function verifyForgotPasswordOTP(request, response) {
     // });
 
     // if otp is not expired,  otp === user.forgot_password_otp
-    return httpResponses(200, response, 'Verify otp Successfully!');
+
+    await UserModel.findByIdAndUpdate(user._id, {
+      forgot_password_otp: '',
+      forgot_password_expiry: '',
+    });
+
+    return httpResponses(200, response, 'Xác nhận thành công !');
   } catch (error) {
     return httpResponses(500, response, error.message || error);
   }
@@ -290,6 +330,15 @@ export async function resetPassword(request, response) {
       );
     }
 
+    const checkPassword = await bcryptjs.compare(newPassword, user.password);
+    if (checkPassword) {
+      return httpResponses(
+        400,
+        response,
+        'Mật khẩu mới không được trùng với mật khẩu hiện tại'
+      );
+    }
+
     const salt = await bcryptjs.genSalt(10);
     const hashPassword = await bcryptjs.hash(newPassword, salt);
 
@@ -311,7 +360,11 @@ export async function refreshToken(request, response) {
       request?.header?.authorization?.split(' ')[1];
 
     if (!refreshToken) {
-      return httpResponses(401, response, 'Invalid token');
+      return httpResponses(
+        401,
+        response,
+        'Token không hợp lệ, vui lòng thử lại sausau'
+      );
     }
 
     const verifyToken = jwt.verify(
@@ -319,7 +372,11 @@ export async function refreshToken(request, response) {
       process.env.SECRET_KEY_REFRESH_TOKEN
     );
     if (!verifyToken) {
-      return httpResponses(401, response, 'Token is expired');
+      return httpResponses(
+        401,
+        response,
+        'Token hết hạn, vui lòng đăng nhập để tiếp tục'
+      );
     }
 
     const newAccessToken = await generatedAccessToken(verifyToken.id);
