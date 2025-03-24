@@ -1,35 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import {useEffect} from 'react';
+import {Outlet} from 'react-router-dom';
+import {ToastContainer, Slide} from 'react-toastify';
+import './App.css';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import FetchUserDetails from './utils/FetchUserDetails';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const fetchUser = async () => {
+    const userData = await FetchUserDetails();
+    console.log('userData', userData);
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Header />
+      <main className='min-h-[70vh] lg:min-h-[75vh]'>
+        <Outlet />
+      </main>
+      <Footer />
+      <ToastContainer
+        position='top-right'
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='colored'
+        transition={Slide}
+      />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

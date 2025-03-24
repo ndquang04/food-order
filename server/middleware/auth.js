@@ -1,10 +1,11 @@
 import jwt from 'jsonwebtoken';
 import {httpResponses} from '../utils/constant.js';
 
-export default async (request, response, next) => {
+const auth = async (request, response, next) => {
   try {
     const token =
-      request.cookies.accessToken || request.header.authorization.split(' ')[1];
+      request.cookies.accessToken ||
+      request?.headers?.authorization?.split(' ')[1];
     if (!token) {
       return httpResponses(401, response, 'Provide token');
     }
@@ -20,3 +21,5 @@ export default async (request, response, next) => {
     return httpResponses(500, response, error.message || error);
   }
 };
+
+export default auth;
