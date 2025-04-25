@@ -44,8 +44,8 @@ const Register = () => {
       setLoading(true);
       const response = await Axios({...SummaryApi.register, data});
       setLoading(false);
-      if (response.data.success) {
-        AxiosToastSuccess(response.data.message);
+      if (response?.data?.success) {
+        AxiosToastSuccess(response?.data?.message);
         setData(defaultData);
         navigate(pageUrl.login);
       }
@@ -64,10 +64,10 @@ const Register = () => {
   };
 
   return (
-    <section className='w-full container mx-auto px-2'>
+    <section className='section'>
       {loading && <Loading />}
-      <div className='bg-white my-4 w-full max-w-lg mx-auto rounded p-7'>
-        <p>Chào mừng đến với FoodFrenzy !</p>
+      <div className='wrapper'>
+        <p className='title'>Chào mừng đến với FoodFrenzy !</p>
 
         <form className='form' onSubmit={handleSubmit}>
           {/* Name */}
@@ -182,17 +182,17 @@ const Register = () => {
                 : 'bg-gray-600 cursor-not-allowed'
             } py-2 my-2 rounded font-semibold text-white`}
           >
-            Register
+            Đăng ký
           </button>
         </form>
 
         <div className='mt-1'>
-          <span>Already have account ?</span>
+          <span>Bạn đã có tài khoản?</span>
           <Link
             to={pageUrl.login}
             className='font-medium text-green-600 hover:text-green-800 ml-1'
           >
-            Login
+            Đăng nhập
           </Link>
         </div>
       </div>

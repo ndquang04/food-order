@@ -1,4 +1,4 @@
-export const baseURL = 'http://192.168.1.15:8080/api';
+export const baseURL = 'http://localhost:8080/api';
 
 const SummaryApi = {
   register: {
@@ -27,6 +27,10 @@ const SummaryApi = {
   },
   userDetails: {
     url: 'user/user-details',
+    method: 'GET',
+  },
+  logout: {
+    url: 'user/logout',
     method: 'GET',
   },
 };

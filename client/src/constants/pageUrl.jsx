@@ -6,6 +6,9 @@ const pageUrl = {
   forgotPassword: '/forgot-password',
   verifyOTP: '/verify-otp',
   resetPassword: '/reset-password',
+  user: '/user',
+  profile: '/dashboard/profile',
+  dashboard: '/dashboard',
 };
 
 export default pageUrl;

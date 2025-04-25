@@ -12,10 +12,21 @@ body {
   font-family: 'Poppins', sans-serif;
   font-weight: normal;
   font-style: normal;
-  @apply bg-slate-100;
+  @apply bg-slate-100 text-neutral-700;
 }
 label {
   align-self: flex-start;
+}
+
+.section {
+  @apply bg-white w-full container mx-auto px-4;
+}
+.wrapper {
+  @apply my-4 w-full max-w-lg mx-auto rounded py-4;
+}
+
+.title {
+  @apply text-[22px] font-medium bg-secondary-200 py-1 text-center rounded text-white;
 }
 
 .form {

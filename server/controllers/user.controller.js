@@ -357,7 +357,7 @@ export async function refreshToken(request, response) {
   try {
     const refreshToken =
       request.cookies.refreshToken ||
-      request?.header?.authorization?.split(' ')[1];
+      request?.headers?.authorization?.split(' ')[1];
 
     if (!refreshToken) {
       return httpResponses(

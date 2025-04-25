@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {FaRegEyeSlash, FaRegEye} from 'react-icons/fa6';
 import Axios from '../utils/Axios';
 import SummaryApi from '../common/SummaryApi';
@@ -6,6 +6,9 @@ import {AxiosToastSuccess, AxiosToastError} from '../utils/AxiosToast';
 import Loading from '../common/Loading';
 import {Link, useNavigate} from 'react-router-dom';
 import pageUrl from '../constants/pageUrl';
+import {useDispatch, useSelector} from 'react-redux';
+import FetchUserDetails from '../utils/FetchUserDetails';
+import {setUserDetails} from '../store/userSlice';
 
 const defaultData = {
   email: '',
@@ -18,6 +21,15 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state?.user?.data);
+  console.log('user login', user);
+
+  useEffect(() => {
+    if (user?._id) {
+      navigate(pageUrl.home);
+    }
+  }, [user?._id]);
 
   const handleChange = (e) => {
     const {name, value} = e.target;
@@ -35,10 +47,12 @@ const Login = () => {
       setLoading(true);
       const response = await Axios({...SummaryApi.login, data});
       setLoading(false);
-      if (response.data.success) {
+      if (response?.data?.success) {
         AxiosToastSuccess(response.data.message);
         localStorage.setItem('accessToken', response.data.data.accessToken);
         localStorage.setItem('refreshToken', response.data.data.refreshToken);
+        const userData = await FetchUserDetails();
+        dispatch(setUserDetails(userData?.data));
         setData(defaultData);
         navigate(pageUrl.home);
       }
@@ -49,10 +63,10 @@ const Login = () => {
   };
 
   return (
-    <section className='w-full container mx-auto px-2'>
+    <section className='section'>
       {loading && <Loading />}
-      <div className='bg-white my-4 w-full max-w-lg mx-auto rounded p-7'>
-        <p className='text-2xl'>Đăng nhập</p>
+      <div className='wrapper'>
+        <p className='title'>Đăng nhập</p>
 
         <form className='form' onSubmit={handleSubmit}>
           {/* Email */}

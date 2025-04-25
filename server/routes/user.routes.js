@@ -21,7 +21,7 @@ userRouter.post('/register', registerUserController);
 userRouter.post('/verify-email', verifyEmailController);
 userRouter.post('/login', loginController);
 userRouter.get('/user-details', auth, userDetailsController);
-userRouter.post('/logout', auth, logoutController);
+userRouter.get('/logout', auth, logoutController);
 userRouter.put(
   '/upload-avatar',
   auth,

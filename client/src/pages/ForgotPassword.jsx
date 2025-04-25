@@ -22,8 +22,8 @@ const ForgotPassword = () => {
       setLoading(true);
       const response = await Axios({...SummaryApi.forgotPassword, data});
       setLoading(false);
-      if (response.data.success) {
-        AxiosToastSuccess(response.data.message);
+      if (response?.data?.success) {
+        AxiosToastSuccess(response?.data?.message);
         navigate(pageUrl.verifyOTP, {
           state: data,
         });
@@ -36,12 +36,10 @@ const ForgotPassword = () => {
   };
 
   return (
-    <section className='w-full container mx-auto px-2'>
+    <section className='section'>
       {loading && <Loading />}
-      <div className='bg-white my-4 w-full max-w-lg mx-auto rounded p-7'>
-        <p className='font-semibold text-lg text-primary-200'>
-          Forgot password
-        </p>
+      <div className='wrapper'>
+        <p className='title'>Quên mật khẩu</p>
         <form className='grid gap-4 py-4' onSubmit={handleSubmit}>
           {/* Email */}
           <div className='form-wrap'>
@@ -63,17 +61,17 @@ const ForgotPassword = () => {
                 : 'bg-gray-600 cursor-not-allowed'
             } py-2 my-2 rounded font-semibold text-white`}
           >
-            Send OTP
+            Gửi mã OTP
           </button>
         </form>
 
         <div className='mt-1'>
-          <span>Already have account ?</span>
+          <span>Bạn đã có tài khoản?</span>
           <Link
             to={pageUrl.login}
             className='font-medium text-green-600 hover:text-green-800 ml-1'
           >
-            Login
+            Đăng nhập
           </Link>
         </div>
       </div>

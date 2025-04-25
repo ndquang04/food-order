@@ -10,8 +10,6 @@ const Axios = axios.create({
 Axios.interceptors.request.use(
   async (config) => {
     const accessToken = localStorage.getItem('accessToken');
-    console.log('accessToken', accessToken);
-
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
@@ -54,11 +52,11 @@ const refreshAccessToken = async (refreshToken) => {
         Authorization: `Bearer ${refreshToken}`,
       },
     });
-    const accessToken = res.data.data.accessToken;
+    const accessToken = res?.data?.data?.accessToken;
     localStorage.setItem('accessToken', accessToken);
     return accessToken;
   } catch (error) {
-    console.log('error refresh token', error.message || error);
+    console.log('error refresh token', error);
   }
 };
 

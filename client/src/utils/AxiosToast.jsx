@@ -1,23 +1,11 @@
 import {toast, Bounce} from 'react-toastify';
 
 const AxiosToastSuccess = (message) => {
-  toast.success(`🦄 ${message}`, {
-    hideProgressBar: false,
-    closeOnClick: false,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-  });
+  toast.success(`🦄 ${message}`);
 };
 
 const AxiosToastError = (message) => {
-  toast.error(`🦄 ${message}`, {
-    hideProgressBar: false,
-    closeOnClick: false,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-  });
+  toast.error(`🦄 ${message}`);
 };
 
 export {AxiosToastSuccess, AxiosToastError};

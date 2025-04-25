@@ -5,11 +5,14 @@ import './App.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import FetchUserDetails from './utils/FetchUserDetails';
+import {setUserDetails} from './store/userSlice';
+import {useDispatch} from 'react-redux';
 
 function App() {
+  const dispatch = useDispatch();
   const fetchUser = async () => {
     const userData = await FetchUserDetails();
-    console.log('userData', userData);
+    dispatch(setUserDetails(userData?.data));
   };
 
   useEffect(() => {
@@ -30,9 +33,9 @@ function App() {
         newestOnTop={false}
         closeOnClick={false}
         rtl={false}
-        pauseOnFocusLoss
+        pauseOnFocusLoss={false}
         draggable
-        pauseOnHover
+        pauseOnHover={false}
         theme='colored'
         transition={Slide}
       />

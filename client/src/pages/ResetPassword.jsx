@@ -51,10 +51,9 @@ const ResetPassword = () => {
       setLoading(true);
       const response = await Axios({...SummaryApi.resetPassword, data});
       setLoading(false);
-      console.log('data', data);
 
-      if (response.data.success) {
-        AxiosToastSuccess(response.data.message);
+      if (response?.data?.success) {
+        AxiosToastSuccess(response?.data?.message);
         navigate(pageUrl.login);
         setData(defaultData);
       }
@@ -65,18 +64,16 @@ const ResetPassword = () => {
   };
 
   return (
-    <section className='w-full container mx-auto px-2'>
+    <section className='section'>
       {loading && <Loading />}
-      <div className='bg-white my-4 w-full max-w-lg mx-auto rounded p-7'>
-        <p className='font-semibold text-lg text-secondary-200'>
-          Reset your password
-        </p>
+      <div className='wrapper'>
+        <p className='title'>Đặt lại mật khẩu</p>
         <form className='grid gap-4 py-4' onSubmit={handleSubmit}>
           {/* Password */}
           <div className='form-wrap'>
             <span>
               <label htmlFor='newPassword' className='cursor-pointer'>
-                New Password
+                Mật khẩu mới
               </label>
             </span>
             <input
@@ -106,7 +103,7 @@ const ResetPassword = () => {
           <div className='form-wrap'>
             <span>
               <label htmlFor='confirmPassword' className='cursor-pointer'>
-                Confirm Password
+                Xác nhận mật khẩu
               </label>
             </span>
             <input
@@ -145,17 +142,17 @@ const ResetPassword = () => {
                 : 'bg-gray-600 cursor-not-allowed'
             } py-2 my-2 rounded font-semibold text-white`}
           >
-            Send OTP
+            Xác nhận
           </button>
         </form>
 
         <div className='mt-1'>
-          <span>Already have account ?</span>
+          <span>Bạn đã có tài khoản?</span>
           <Link
             to={pageUrl.login}
             className='font-medium text-green-600 hover:text-green-800 ml-1'
           >
-            Login
+            Đăng nhập
           </Link>
         </div>
       </div>

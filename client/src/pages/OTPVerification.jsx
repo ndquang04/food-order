@@ -47,8 +47,8 @@ const OTPVerification = () => {
         },
       });
       setLoading(false);
-      if (response.data.success) {
-        AxiosToastSuccess(response.data.message);
+      if (response?.data?.success) {
+        AxiosToastSuccess(response?.data?.message);
         setOtp(defaultData);
         navigate(pageUrl.resetPassword, {
           state: {
@@ -63,10 +63,10 @@ const OTPVerification = () => {
   };
 
   return (
-    <section className='w-full container mx-auto px-2'>
+    <section className='section'>
       {loading && <Loading />}
-      <div className='bg-white my-4 w-full max-w-lg mx-auto rounded p-7'>
-        <p className='font-semibold text-lg text-primary-200'>Verify OTP 😊</p>
+      <div className='wrapper'>
+        <p className='title'>Xác nhận OTP 😊</p>
         <form className='grid gap-4 py-4' onSubmit={handleSubmit}>
           {/* OTP */}
           <div className='form-wrap'>
@@ -94,7 +94,7 @@ const OTPVerification = () => {
                 : 'bg-gray-600 cursor-not-allowed'
             } py-2 my-2 rounded font-semibold text-white`}
           >
-            Verify
+            Xác nhận
           </button>
         </form>
 
@@ -104,7 +104,7 @@ const OTPVerification = () => {
             to={pageUrl.login}
             className='font-medium text-green-600 hover:text-green-800 ml-1'
           >
-            Login
+            Đăng nhập
           </Link>
         </div>
       </div>
