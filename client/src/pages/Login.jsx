@@ -7,8 +7,10 @@ import Loading from '../common/Loading';
 import {Link, useNavigate} from 'react-router-dom';
 import pageUrl from '../constants/pageUrl';
 import {useDispatch, useSelector} from 'react-redux';
+import {FacebookAuthProvider, signInWithPopup} from 'firebase/auth';
 import FetchUserDetails from '../utils/FetchUserDetails';
 import {setUserDetails} from '../store/userSlice';
+import {auth} from '../utils/Firebase';
 
 const defaultData = {
   email: '',
@@ -59,6 +61,16 @@ const Login = () => {
     } catch (error) {
       setLoading(false);
       AxiosToastError(error?.response?.data?.message || error.message);
+    }
+  };
+
+  const loginWithFB = async () => {
+    try {
+      const provider = new FacebookAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      console.log('LOGGED USER', result?.user);
+    } catch (error) {
+      console.log('error login FB', error?.message || error);
     }
   };
 
@@ -127,6 +139,13 @@ const Login = () => {
             } py-2 my-2 rounded font-semibold text-white`}
           >
             Đăng nhập
+          </button>
+          <button
+            onClick={loginWithFB}
+            type='button'
+            className='bg-green-600 hover:bg-green-700 cursor-pointer py-2 my-2 rounded font-semibold'
+          >
+            Đăng nhập với Facebook
           </button>
         </form>
 
